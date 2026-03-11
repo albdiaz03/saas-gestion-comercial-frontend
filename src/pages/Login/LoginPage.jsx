@@ -1,31 +1,43 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function LoginPage() {
-
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
+    try {
 
-    const response = await axios.post(
-      "http://localhost:5152/api/Auth/login",
-      {
-        email: email,
-        password: password
-      }
-    );
+      const response = await axios.post(
+        'http://localhost:5152/api/Auth/login',
+        {
+          email: email,
+          password: password
+        }
+      );
 
-    const token = response.data.token;
+      const token = response.data.token;
 
-    localStorage.setItem("token", token);
+      localStorage.setItem("token", token);
 
-    alert("Login correcto");
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          name: response.data.name,
+          email: response.data.email
+        })
+      );
 
-    navigate("/dashboard");   // 👈 redirige a productos
+      alert('Login correcto');
+
+      navigate('/dashboard');
+
+    } catch (error) {
+      alert("Login incorrecto");
+    }
   };
 
   return (
@@ -46,7 +58,6 @@ function LoginPage() {
       <button onClick={handleLogin}>
         Iniciar sesión
       </button>
-
     </div>
   );
 }

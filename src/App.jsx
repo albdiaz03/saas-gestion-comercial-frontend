@@ -1,12 +1,10 @@
-import AppRouter from "./router/AppRouter";
+import AppRouter from './router/AppRouter';
 
+// Muestra el título fijo y carga el router.
 function App() {
   return (
     <div>
-      <h1>SaaS Gestión Comercial</h1>
-
       <AppRouter />
-
     </div>
   );
 }

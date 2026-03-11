@@ -1,52 +1,92 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Package, Users, ShoppingCart } from 'lucide-react';
+import './AppLayout.css';
 
 function AppLayout({ children }) {
+  const navigate = useNavigate();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-    const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user")) || {};
 
-    const handleLogout = () => {
-        // eliminamos el token del browser
-        localStorage.removeItem("token");
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/');
+  };
 
-        //redieccion al logn
-        navigate("/");
-    }
+  const closeMobileSidebar = () => setMobileSidebarOpen(false);
 
   return (
+    <div className="layout">
 
-    <div style={{ display: "flex", height: "100vh" }}>
+      {/* Burger solo visible en mobile */}
+      <button
+        className="mobile-menu-btn"
+        onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+      >
+        ☰
+      </button>
 
-      <div style={{
-        width: "200px",
-        background: "#1e293b",
-        color: "white",
-        padding: "20px"
-      }}>
+      {/* Overlay oscuro al abrir en mobile */}
+      <div
+        className={`sidebar-overlay ${mobileSidebarOpen ? 'active' : ''}`}
+        onClick={closeMobileSidebar}
+      />
 
-        <h3>SaaS</h3>
+      <aside className={`sidebar ${sidebarCollapsed ? 'collapsed' : ''} ${mobileSidebarOpen ? 'open' : ''}`}>
 
-        <nav style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <Link to="/dashboard">Dashboard</Link>
-          <Link to="/products">Products</Link>
-          <Link to="/clients">Clients</Link>
-          <Link to="/sales">Sales</Link>
-        </nav>
-
+        {/* Toggle collapse — solo desktop */}
         <button
-            onClick={handleLogout}
-            style={{ marginTop: "20px" }}
-            >
-                Logout
+          className="toggle-btn"
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+        >
+          ☰
         </button>
 
-      </div>
+        <h3 className="sidebar-title">My SaaS</h3>
 
-      <div style={{ flex: 1, padding: "20px" }}>
+        <div className="sidebar-user">
+          <div className="user-avatar">
+            {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+          </div>
+          <div className="user-info">
+            <span className="user-name">{user?.name || "User"}</span>
+            <span className="user-email">{user?.email || "email@email.com"}</span>
+          </div>
+        </div>
+
+        <nav className="sidebar-nav">
+          <Link className="sidebar-link" to="/dashboard" onClick={closeMobileSidebar}>
+            <LayoutDashboard size={18} />
+            <span>Dashboard</span>
+          </Link>
+          <Link className="sidebar-link" to="/products" onClick={closeMobileSidebar}>
+            <Package size={18} />
+            <span>Products</span>
+          </Link>
+          <Link className="sidebar-link" to="/clients" onClick={closeMobileSidebar}>
+            <Users size={18} />
+            <span>Clients</span>
+          </Link>
+          <Link className="sidebar-link" to="/sales" onClick={closeMobileSidebar}>
+            <ShoppingCart size={18} />
+            <span>Sales</span>
+          </Link>
+        </nav>
+
+        <button onClick={handleLogout} className="logout-btn">
+          Logout
+        </button>
+
+      </aside>
+
+      <main className="main-content">
         {children}
-      </div>
+      </main>
 
     </div>
-
   );
 }
 
