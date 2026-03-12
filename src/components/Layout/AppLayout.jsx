@@ -8,7 +8,8 @@ function AppLayout({ children }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem("user")) || {};
+  const storedUser = localStorage.getItem("user");
+ const user = storedUser ? JSON.parse(storedUser) : null;
 
   const handleLogout = () => {
     localStorage.removeItem('token');

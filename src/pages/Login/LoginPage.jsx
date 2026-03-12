@@ -9,36 +9,27 @@ function LoginPage() {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    try {
+  try {
 
-      const response = await axios.post(
-        'http://localhost:5152/api/Auth/login',
-        {
-          email: email,
-          password: password
-        }
-      );
+    const response = await axios.post(
+      'http://localhost:5152/api/Auth/login',
+      {
+        email: email,
+        password: password
+      }
+    );
 
-      const token = response.data.token;
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      localStorage.setItem("token", token);
+    alert('Login correcto');
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          name: response.data.name,
-          email: response.data.email
-        })
-      );
+    navigate('/dashboard');
 
-      alert('Login correcto');
-
-      navigate('/dashboard');
-
-    } catch (error) {
-      alert("Login incorrecto");
-    }
-  };
+  } catch (error) {
+    alert("Login incorrecto");
+  }
+};
 
   return (
     <div>
