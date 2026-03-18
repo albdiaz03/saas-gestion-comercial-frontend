@@ -4,7 +4,7 @@ function ProtectedRoute({ children }) {
 
   // Busca el token guardado en el navegador
   // Este token se guardó cuando el usuario hizo login
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
     // Si NO existe token significa que el usuario no está autenticado ojo aqui
   if (!token) {

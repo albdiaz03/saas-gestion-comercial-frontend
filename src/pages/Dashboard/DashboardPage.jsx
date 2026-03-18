@@ -1,60 +1,69 @@
 import AppLayout from '../../components/Layout/AppLayout';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
-
+import { getProducts } from '../../services/dashboardService';
 import './Dashboard.css';
 
 function DashboardPage() {
-  const [message, setMessage] = useState('');
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem('token');
-
-      const response = await axios.get('http://localhost:5152/api/dashboard', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      setMessage(response.data.message);
-    };
-
     fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const data = await getProducts();
+      setProducts(data);
+    } catch {
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const totalProductos = products.length;
+  const productosActivos = products.filter((p) => p.isActive).length;
+  const stockBajo = products.filter((p) => p.stock <= 5).length;
+  const valorInventario = products.reduce(
+    (acc, p) => acc + p.price * p.stock,
+    0
+  );
 
   return (
     <AppLayout>
       <div className="dashboard-container">
-        {/* HEADER DEL DASHBOARD */}
         <div className="dashboard-header">
-          <div className="dashboard-heading">
-            <h1 className="dashboard-title">Dashboard</h1>
-          </div>
+          <h1 className="dashboard-title">Dashboard</h1>
         </div>
-
-        {/* GRID DE TARJETAS */}
 
         <div className="dashboard-grid">
           <div className="dashboard-card">
-            <div className="card-title">Message API</div>
-            <div className="card-value">{message}</div>
+            <div className="card-title">Total Productos</div>
+            <div className="card-value">{loading ? '...' : totalProductos}</div>
           </div>
 
           <div className="dashboard-card">
-            <div className="card-title">Products</div>
-            <div className="card-value">0</div>
+            <div className="card-title">Stock Bajo</div>
+            <div className="card-value">{loading ? '...' : stockBajo}</div>
+            {!loading && stockBajo > 0 && (
+              <div className="card-alert">⚠ revisar</div>
+            )}
           </div>
 
           <div className="dashboard-card">
-            <div className="card-title">Clients</div>
-            <div className="card-value">0</div>
+            <div className="card-title">Total Clientes</div>
+            <div className="card-value card-pending">—</div>
           </div>
 
           <div className="dashboard-card">
-            <div className="card-title">Sales</div>
-            <div className="card-value">$0</div>
+            <div className="card-title">Ingresos del mes</div>
+            <div className="card-value card-pending">—</div>
           </div>
+
+
         </div>
       </div>
     </AppLayout>

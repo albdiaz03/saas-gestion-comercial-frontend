@@ -1,15 +1,24 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, Users, ShoppingCart } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Package, Users, ShoppingCart, LogOut } from 'lucide-react';
 import './AppLayout.css';
+
+const navItems = [
+  { to: '/dashboard', icon: <LayoutDashboard size={17} />, label: 'Dashboard' },
+  { to: '/products',  icon: <Package size={17} />,         label: 'Products'  },
+  { to: '/clients',   icon: <Users size={17} />,           label: 'Clients'   },
+  { to: '/sales',     icon: <ShoppingCart size={17} />,    label: 'Sales'     },
+];
 
 function AppLayout({ children }) {
   const navigate = useNavigate();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed]   = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const storedUser = localStorage.getItem("user");
- const user = storedUser ? JSON.parse(storedUser) : null;
+  const user = (() => {
+    try { return JSON.parse(localStorage.getItem('user')); }
+    catch { return null; }
+  })();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -17,70 +26,92 @@ function AppLayout({ children }) {
     navigate('/');
   };
 
-  const closeMobileSidebar = () => setMobileSidebarOpen(false);
+  const closeMenu = () => setMobileOpen(false);
 
   return (
-    <div className="layout">
+    <div className={`layout${collapsed ? ' layout--collapsed' : ''}`}>
 
-      {/* Burger solo visible en mobile */}
-      <button
-        className="mobile-menu-btn"
-        onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-      >
-        ☰
-      </button>
-
-      {/* Overlay oscuro al abrir en mobile */}
-      <div
-        className={`sidebar-overlay ${mobileSidebarOpen ? 'active' : ''}`}
-        onClick={closeMobileSidebar}
-      />
-
-      <aside className={`sidebar ${sidebarCollapsed ? 'collapsed' : ''} ${mobileSidebarOpen ? 'open' : ''}`}>
-
-        {/* Toggle collapse — solo desktop */}
+      {/* MOBILE — top navbar */}
+      <nav className="mobile-navbar">
+        <span className="mobile-navbar-brand">My SaaS</span>
         <button
-          className="toggle-btn"
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          className="mobile-menu-btn"
+          onClick={() => setMobileOpen(v => !v)}
+          aria-label="Abrir menú"
         >
-          ☰
+          {mobileOpen ? '✕' : '☰'}
         </button>
+      </nav>
 
-        <h3 className="sidebar-title">My SaaS</h3>
+      {/* Dropdown mobile */}
+      {mobileOpen && (
+        <>
+          <div className="sidebar-overlay" onClick={closeMenu} />
+          <div className="mobile-dropdown">
+            <div className="sidebar-user">
+              <div className="user-avatar">
+                {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              </div>
+              <div className="user-info">
+                <span className="user-name">{user?.name  || 'User'}</span>
+                <span className="user-email">{user?.email || 'email@email.com'}</span>
+              </div>
+            </div>
+            <nav className="sidebar-nav">
+              {navItems.map(({ to, icon, label }) => (
+                <NavLink key={to} className="sidebar-link" to={to} onClick={closeMenu}>
+                  <span className="link-icon">{icon}</span>
+                  <span className="link-label">{label}</span>
+                </NavLink>
+              ))}
+            </nav>
+            <button className="logout-btn" onClick={handleLogout}>
+              <span className="link-icon"><LogOut size={17} /></span>
+              <span className="link-label">Logout</span>
+            </button>
+          </div>
+        </>
+      )}
+
+      {/* DESKTOP — sidebar */}
+      <aside className={`sidebar${collapsed ? ' collapsed' : ''}`}>
+        <div className="sidebar-header">
+          <span className="sidebar-title">My SaaS</span>
+          <button
+  className="toggle-btn"
+  onClick={() => setCollapsed(v => !v)}
+  aria-label="Colapsar sidebar"
+>
+  {collapsed ? '☰' : '✕'}
+</button>
+        </div>
 
         <div className="sidebar-user">
           <div className="user-avatar">
-            {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+            {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
           </div>
           <div className="user-info">
-            <span className="user-name">{user?.name || "User"}</span>
-            <span className="user-email">{user?.email || "email@email.com"}</span>
+            <span className="user-name">{user?.name  || 'User'}</span>
+            <span className="user-email">{user?.email || 'email@email.com'}</span>
           </div>
         </div>
 
+        <div className="sidebar-divider" />
+
         <nav className="sidebar-nav">
-          <Link className="sidebar-link" to="/dashboard" onClick={closeMobileSidebar}>
-            <LayoutDashboard size={18} />
-            <span>Dashboard</span>
-          </Link>
-          <Link className="sidebar-link" to="/products" onClick={closeMobileSidebar}>
-            <Package size={18} />
-            <span>Products</span>
-          </Link>
-          <Link className="sidebar-link" to="/clients" onClick={closeMobileSidebar}>
-            <Users size={18} />
-            <span>Clients</span>
-          </Link>
-          <Link className="sidebar-link" to="/sales" onClick={closeMobileSidebar}>
-            <ShoppingCart size={18} />
-            <span>Sales</span>
-          </Link>
+          <span className="nav-section-label">Main Menu</span>
+          {navItems.map(({ to, icon, label }) => (
+            <NavLink key={to} className="sidebar-link" to={to}>
+              <span className="link-icon">{icon}</span>
+              <span className="link-label">{label}</span>
+            </NavLink>
+          ))}
         </nav>
 
-        <button onClick={handleLogout} className="logout-btn">
-          Logout
+        <button className="logout-btn" onClick={handleLogout}>
+          <span className="link-icon"><LogOut size={17} /></span>
+          <span className="link-label">Logout</span>
         </button>
-
       </aside>
 
       <main className="main-content">
