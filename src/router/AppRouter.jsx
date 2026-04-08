@@ -3,54 +3,34 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from '../pages/Login/LoginPage';
 import DashboardPage from '../pages/Dashboard/DashboardPage';
 import ProductsPage from '../pages/Products/ProductsPage';
-
-// Proteccion de rutas
-import ProtectedRoute from '../components/ProtectedRoute';
 import ClientsPage from '../pages/Clients/ClientsPage';
 import SalesPage from '../pages/Sales/SalesPage';
 
-// AppRouter → Lee la URL y decide qué página renderizar.
+import ProtectedRoute from '../components/ProtectedRoute';
+import AppLayout from '../components/Layout/AppLayout';
+
 function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Ruta pública */}
+
+        {/* PUBLIC */}
         <Route path="/" element={<LoginPage />} />
-        {/* Ruta protegida */}
+
+        {/* PROTECTED + LAYOUT */}
         <Route
-          path="/dashboard"
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <AppLayout />
             </ProtectedRoute>
           }
-        />
-        <Route
-          path="/products"
-          element={
-            <ProtectedRoute>
-              <ProductsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/clients"
-          element={
-            <ProtectedRoute>
-              <ClientsPage />
-            </ProtectedRoute>
-          }
-        />
-        {/*/ Route "/sales" → Activa la página de ventas cuando la URL es /sales.*/}
-        <Route
-          path="/sales"
-          element={
-            // ProtectedRoute → Verifica el token. Si no hay token, manda al login.
-            <ProtectedRoute>
-              <SalesPage />
-            </ProtectedRoute>
-          }
-        />
+        >
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/clients" element={<ClientsPage />} />
+          <Route path="/sales" element={<SalesPage />} />
+        </Route>
+
       </Routes>
     </BrowserRouter>
   );

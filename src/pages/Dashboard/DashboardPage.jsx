@@ -33,7 +33,7 @@ function DashboardPage() {
   );
 
   return (
-    <AppLayout>
+
       <div className="dashboard-container">
         <div className="dashboard-header">
           <h1 className="dashboard-title">Dashboard</h1>
@@ -66,7 +66,7 @@ function DashboardPage() {
 
         </div>
       </div>
-    </AppLayout>
+  
   );
 }
 
