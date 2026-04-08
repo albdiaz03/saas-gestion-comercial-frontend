@@ -82,13 +82,9 @@ Roles supported:
 * **Sales**
 * **Supervisor**
 
-Role-based authorization ensures that users only access permitted resources.
-
 ---
 
 ## 📦 Product Management
-
-Companies can manage their inventory:
 
 * Create products
 * Set prices
@@ -99,20 +95,12 @@ Companies can manage their inventory:
 
 ## 🧾 Customer Management
 
-Businesses can register and track their clients.
-
-Features:
-
 * Customer registration
 * Purchase history tracking
 
 ---
 
 ## 💰 Sales Management
-
-Sales can be registered within the platform.
-
-Capabilities:
 
 * Associate customers with sales
 * Add products to the sale
@@ -123,14 +111,10 @@ Capabilities:
 
 ## 📊 Dashboard & Metrics
 
-The system provides key business insights:
-
 * Total sales of the month
 * Best selling product
 * Daily sales metrics
 * Accumulated revenue
-
-Frontend dashboards are implemented using **React charts**.
 
 ---
 
@@ -138,16 +122,14 @@ Frontend dashboards are implemented using **React charts**.
 
 ## Backend
 
-Built with:
+* ASP.NET Core Web API
+* JWT Authentication
+* Global Error Handling Middleware
+* Multi-Tenant architecture using CompanyId
+* Repository Pattern / Clean Architecture
+* SQL Server
 
-* **ASP.NET Core Web API**
-* **JWT Authentication**
-* **Global Error Handling Middleware**
-* **Multi-Tenant architecture using CompanyId**
-* **Repository Pattern / Clean Architecture**
-* **SQL Server**
-
-Core responsibilities:
+Responsibilities:
 
 * Authentication & authorization
 * Business logic
@@ -158,83 +140,152 @@ Core responsibilities:
 
 ## Frontend
 
-Built with:
-
-* **React**
-* **Axios with interceptors**
-* **JWT authentication flow**
-* **Protected routes**
-* **Modern CRUD interfaces**
-* **Dashboard with charts**
+* React (Vite)
+* React Router (Protected Routes + Outlet)
+* Axios with interceptors
+* JWT authentication flow
+* Modular CRUD interfaces
 
 ---
 
-# 🔐 Security Features
+## 📐 Architecture Diagram
 
-The platform implements several best practices:
+<!-- TODO: Add architecture diagram -->
 
-* JWT-based authentication
-* Role-based authorization
-* Tenant-based data isolation
-* Secure API endpoints
-* Centralized error handling
+<!-- Suggested:
+Frontend → API → Services → Database (with CompanyId filtering)
+-->
+
+---
+
+# 🧠 Technical Decisions
+
+### 1. Multi-Tenant via CompanyId
+
+Tenant isolation is handled at the application level using a CompanyId filter across all entities.
+
+### 2. JWT Authentication
+
+A stateless authentication approach was implemented for scalability and simplicity.
+
+### 3. Protected Routes
+
+Frontend route protection ensures only authenticated users can access the system.
+
+### 4. Layout with Nested Routing
+
+React Router `Outlet` avoids layout duplication and improves maintainability.
+
+### 5. Service Layer (Frontend)
+
+API calls are abstracted into services to decouple UI from backend logic.
+
+---
+
+# ⚖️ Trade-offs
+
+* Single database multi-tenant instead of database-per-tenant
+* Local state instead of global state management
+* No caching layer
+
+These decisions prioritize **simplicity and fast iteration**.
+
+---
+
+# 🔄 Key Flows
+
+## Authentication Flow
+
+1. User logs in
+2. Backend validates credentials
+3. JWT token is returned
+4. Token is stored in browser
+5. Protected routes allow access
+
+## Sales Flow
+
+1. User selects a client
+2. Adds products
+3. Calculates total
+4. Sends request to API
+5. Backend processes and stores the sale
+
+---
+
+# 📸 Screenshots
+
+<!-- TODO: Add screenshots -->
+
+<!-- Suggested:
+- Login
+- Dashboard
+- Products
+- Sales
+-->
 
 ---
 
 # 📂 Project Structure (Conceptual)
 
-Backend
+## Backend
 
-```
 /Backend
-  /Controllers
-  /Services
-  /Repositories
-  /Entities
-  /DTOs
-  /Middleware
-```
+/Controllers
+/Services
+/Repositories
+/Entities
+/DTOs
+/Middleware
 
-Frontend
+## Frontend
 
-```
 /Frontend
-  /components
-  /pages
-  /services
-  /hooks
-  /layouts
-```
+/components
+/pages
+/services
+/hooks
+/layouts
 
 ---
 
-# 🎯 Project Goals
+# ⚙️ Setup & Installation
 
-This project aims to demonstrate:
+## Backend
 
-* Real **SaaS architecture**
-* **Multi-tenant design**
-* **Secure authentication**
-* **Role-based authorization**
-* **Scalable full-stack development**
+cd Backend
+dotnet restore
+dotnet run
 
+## Frontend
 
+cd Frontend
+npm install
+npm run dev
+
+<!-- TODO: Add .env variables if needed -->
 
 ---
 
-# 🛠 Future Improvements
+# 🔐 Security
 
-Planned enhancements:
+* JWT authentication
+* Role-based authorization
+* Tenant data isolation
+* Protected API endpoints
 
-* Subscription billing integration
+---
+
+# 🚀 Future Improvements
+
+* Subscription billing
 * Advanced analytics
 * Audit logs
 * Email notifications
 * Multi-language support
-* Deployment with Docker and CI/CD
+* Docker & CI/CD
 
 ---
 
 # 📜 License
 
-
+<!-- TODO: Add license (MIT recommended) -->
