@@ -151,9 +151,10 @@ Responsibilities:
 ## 📐 Architecture Diagram
 
 <!-- TODO: Add architecture diagram -->
-
+![Architecture Diagram](./docs/images/SaaSArchitecture.png)
 <!-- Suggested:
 Frontend → API → Services → Database (with CompanyId filtering)
+
 -->
 
 ---
